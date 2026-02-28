@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>瞑想ログ</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="meditation.css">
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="m-header">
+    <div class="m-container">
+      <h1 class="m-title">瞑想ログ</h1>
+    </div>
+  </header>
+
+  <!-- ===== TAB NAVIGATION ===== -->
+  <nav class="m-tabs">
+    <button class="m-tab active" data-tab="stopwatch">
+      <i class="fa-solid fa-stopwatch"></i>
+      <span>瞑想</span>
+    </button>
+    <button class="m-tab" data-tab="record">
+      <i class="fa-solid fa-pen-to-square"></i>
+      <span>記録</span>
+    </button>
+    <button class="m-tab" data-tab="dashboard">
+      <i class="fa-solid fa-chart-line"></i>
+      <span>成長</span>
+    </button>
+  </nav>
+
+  <!-- ===== STOPWATCH SECTION ===== -->
+  <section id="stopwatch" class="m-section active">
+    <div class="m-container m-stopwatch-container">
+      <div class="m-stopwatch-display">
+        <span id="sw-minutes">00</span>
+        <span class="m-sw-colon">:</span>
+        <span id="sw-seconds">00</span>
+      </div>
+      <p class="m-stopwatch-hint" id="sw-hint">静かに座り、呼吸に意識を向けましょう</p>
+      <div class="m-stopwatch-controls">
+        <button id="sw-start" class="m-sw-btn m-sw-start">開始</button>
+        <button id="sw-stop" class="m-sw-btn m-sw-stop hidden">停止</button>
+      </div>
+      <button id="sw-reset" class="m-sw-reset hidden">リセット</button>
+    </div>
+  </section>
+
+  <!-- ===== RECORD SECTION ===== -->
+  <section id="record" class="m-section">
+    <div class="m-container">
+
+      <!-- Duration selector -->
+      <div class="m-card">
+        <h2 class="m-card-title">瞑想時間</h2>
+        <div class="m-duration-buttons">
+          <button class="m-duration-btn" data-minutes="5">5分</button>
+          <button class="m-duration-btn" data-minutes="10">10分</button>
+          <button class="m-duration-btn" data-minutes="15">15分</button>
+          <button class="m-duration-btn" data-minutes="20">20分</button>
+          <button class="m-duration-btn" data-minutes="30">30分</button>
+          <button class="m-duration-btn" data-minutes="45">45分</button>
+          <button class="m-duration-btn" data-minutes="60">60分</button>
+        </div>
+        <div class="m-custom-duration">
+          <label for="custom-minutes">カスタム:</label>
+          <input type="number" id="custom-minutes" min="1" max="480" placeholder="分数を入力">
+        </div>
+      </div>
+
+      <!-- Concentration level -->
+      <div class="m-card">
+        <h2 class="m-card-title">集中度</h2>
+        <div class="m-concentration-selector">
+          <button class="m-conc-btn" data-level="1">
+            <span class="m-conc-circle"></span>
+            <span class="m-conc-label">1</span>
+          </button>
+          <button class="m-conc-btn" data-level="2">
+            <span class="m-conc-circle"></span>
+            <span class="m-conc-label">2</span>
+          </button>
+          <button class="m-conc-btn" data-level="3">
+            <span class="m-conc-circle"></span>
+            <span class="m-conc-label">3</span>
+          </button>
+          <button class="m-conc-btn" data-level="4">
+            <span class="m-conc-circle"></span>
+            <span class="m-conc-label">4</span>
+          </button>
+          <button class="m-conc-btn" data-level="5">
+            <span class="m-conc-circle"></span>
+            <span class="m-conc-label">5</span>
+          </button>
+        </div>
+        <p class="m-conc-description" id="conc-description"></p>
+      </div>
+
+      <!-- Notes -->
+      <div class="m-card">
+        <h2 class="m-card-title">気づきメモ</h2>
+        <textarea id="notes" class="m-textarea" placeholder="瞑想中の気づきや感想を記録..." rows="4"></textarea>
+      </div>
+
+      <!-- Save button -->
+      <button id="save-btn" class="m-save-btn">記録を保存する</button>
+
+      <!-- Success toast -->
+      <div id="save-toast" class="m-toast hidden">保存しました！</div>
+    </div>
+  </section>
+
+  <!-- ===== DASHBOARD SECTION ===== -->
+  <section id="dashboard" class="m-section">
+    <div class="m-container">
+
+      <!-- Level display -->
+      <div class="m-card m-level-card">
+        <div class="m-level-header">
+          <div class="m-level-badge" id="level-badge">
+            <span class="m-level-number" id="level-number">1</span>
+          </div>
+          <div class="m-level-info">
+            <p class="m-level-label">Lv.<span id="level-display">1</span></p>
+            <p class="m-level-name" id="level-name">入門</p>
+          </div>
+        </div>
+        <div class="m-progress-bar-container">
+          <div class="m-progress-bar" id="level-progress" style="width: 0%"></div>
+        </div>
+        <p class="m-progress-text" id="progress-text">次のレベルまであと 60 分</p>
+      </div>
+
+      <!-- Stats summary -->
+      <div class="m-stats-grid">
+        <div class="m-stat-card">
+          <p class="m-stat-value" id="total-sessions">0</p>
+          <p class="m-stat-label">総セッション</p>
+        </div>
+        <div class="m-stat-card">
+          <p class="m-stat-value" id="total-minutes">0</p>
+          <p class="m-stat-label">総瞑想時間(分)</p>
+        </div>
+        <div class="m-stat-card">
+          <p class="m-stat-value" id="current-streak">0</p>
+          <p class="m-stat-label">連続日数</p>
+        </div>
+        <div class="m-stat-card">
+          <p class="m-stat-value" id="longest-streak">0</p>
+          <p class="m-stat-label">最長連続</p>
+        </div>
+      </div>
+
+      <!-- Weekly bar chart -->
+      <div class="m-card">
+        <h2 class="m-card-title">今週の瞑想</h2>
+        <canvas id="weekly-chart" height="200"></canvas>
+      </div>
+
+      <!-- Calendar heatmap -->
+      <div class="m-card">
+        <h2 class="m-card-title">瞑想カレンダー</h2>
+        <div class="m-calendar-nav">
+          <button id="cal-prev" class="m-cal-nav-btn"><i class="fa-solid fa-chevron-left"></i></button>
+          <span id="cal-month-label"></span>
+          <button id="cal-next" class="m-cal-nav-btn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="m-calendar-grid" id="calendar-grid"></div>
+        <div class="m-calendar-legend">
+          <span>少</span>
+          <span class="m-legend-box level-0"></span>
+          <span class="m-legend-box level-1"></span>
+          <span class="m-legend-box level-2"></span>
+          <span class="m-legend-box level-3"></span>
+          <span class="m-legend-box level-4"></span>
+          <span>多</span>
+        </div>
+      </div>
+
+      <!-- Recent sessions -->
+      <div class="m-card">
+        <h2 class="m-card-title">最近の記録</h2>
+        <div id="recent-sessions"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="meditation.js"></script>
+</body>
+</html>
